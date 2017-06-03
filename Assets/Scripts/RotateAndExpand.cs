@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class RotateAndExpand : MonoBehaviour {
 
-    [Header("First animation")]
+    [Header ("First animation")]
     public Transform yinYang;
     public Vector3 scale = Vector3.one;
     public Ease firstEase = Ease.OutQuad;
     public float firstDuration = 3;
     public float angle = 90;
-    
-    [Header("Second animation")]    
+
+    [Header ("Second animation")]
     public Transform positiveSide;
     public Transform negativeSide;
     public float yOffset = 6;
@@ -23,23 +23,22 @@ public class RotateAndExpand : MonoBehaviour {
     public bool canInteract = true;
     private int count = 0;
 
-    private void PlayFirstAnimation() {
+    private void PlayFirstAnimation () {
 
-        transform.DOScale(scale, firstDuration).SetEase(firstEase);
-        transform.DORotate(Vector3.forward * angle, firstDuration).SetEase(firstEase).OnComplete(PlaySecondAnimation);
+        transform.DOScale (scale, firstDuration).SetEase (firstEase);
+        transform.DORotate (Vector3.forward * angle, firstDuration).SetEase (firstEase).OnComplete (PlaySecondAnimation);
 
     }
 
-    private void PlaySecondAnimation() {
+    private void PlaySecondAnimation () {
 
         // Negative side goes up
-        negativeSide.DOMoveY(negativeSide.position.y + yOffset, secondDuration).SetEase(secondEase);
-        
+        negativeSide.DOMoveY (negativeSide.position.y + yOffset, secondDuration).SetEase (secondEase);
+
         // Positive side goes down
-        positiveSide.DOMoveY(positiveSide.position.y - yOffset, secondDuration).SetEase(secondEase);
-        
-        StartCoroutine(EnableChildInteraction(secondDuration + 0.1f));
-                
+        positiveSide.DOMoveY (positiveSide.position.y - yOffset, secondDuration).SetEase (secondEase);
+
+        StartCoroutine (EnableChildInteraction (secondDuration + 0.1f));
 
     }
 
@@ -47,18 +46,18 @@ public class RotateAndExpand : MonoBehaviour {
     /// OnMouseDown is called when the user has pressed the mouse button while
     /// over the GUIElement or Collider.
     /// </summary>
-    void OnMouseDown() {
+    void OnMouseDown () {
 
         if (canInteract) {
 
             if (count == 0) {
-                
+
                 count++;
-                PlayFirstAnimation();
-                
+                PlayFirstAnimation ();
+
                 // Get rid of the circle collider
-                Destroy(GetComponent<CircleCollider2D>());
-                
+                Destroy (GetComponent<CircleCollider2D> ());
+
                 canInteract = false;
 
             }
@@ -66,18 +65,22 @@ public class RotateAndExpand : MonoBehaviour {
 
     }
 
-    private void IncrementCount() {
+    private void IncrementCount () {
         count++;
     }
 
-    private IEnumerator EnableChildInteraction(float waitTime) {
+    private IEnumerator EnableChildInteraction (float waitTime) {
 
-        yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds (waitTime);
 
         for (int i = 0; i < yinYang.childCount; i++) {
 
-            NegativeSpaceImage child = yinYang.GetChild(i).GetComponent<NegativeSpaceImage>();
-            child.canInteract = true;
+            NegativeSpaceImage child = yinYang.GetChild (i).GetComponent<NegativeSpaceImage> ();
+
+            if (child != null) {
+                child.gameObject.AddComponent<CircleCollider2D> ();
+                child.canInteract = true;
+            }
 
         }
 
