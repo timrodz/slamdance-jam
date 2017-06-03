@@ -10,7 +10,6 @@ public enum State {
 
 public class NegativeSpaceImage : MonoBehaviour {
 
-    private MeshRenderer mr;
     private Material material;
 
     public State state;
@@ -20,8 +19,7 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void Awake() {
 
-        mr = GetComponent<MeshRenderer>();
-        material = mr.material;
+        material = GetComponent<Renderer>().material;
 
     }
 
@@ -82,7 +80,7 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnValidate() {
 
-        // AssignColor();
+        AssignColor();
 
     }
 #endif

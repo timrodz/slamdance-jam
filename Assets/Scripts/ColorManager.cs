@@ -6,10 +6,10 @@ public class ColorManager : MonoBehaviour {
 
     public static ColorManager Instance { get; private set; }
 
-    [HideInInspector]
+    // [HideInInspector]
     public Color PositiveSpaceColor = Color.white;
 
-    [HideInInspector]
+    // [HideInInspector]
     public Color NegativeSpaceColor = Color.black;
 
     private List<NegativeSpaceImage> imageList = new List<NegativeSpaceImage>();
