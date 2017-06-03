@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 public enum State {
@@ -13,6 +14,12 @@ public class NegativeSpaceImage : MonoBehaviour {
     private Material material;
 
     public State state;
+
+    public bool canInteract = true;
+    public bool shouldRepeatEvent = true;
+    private bool canPlayEvents = true;
+    public UnityEvent[] onMouseDown;
+    private int clickCount = 0;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -70,6 +77,55 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// over the GUIElement or Collider.
     /// </summary>
     void OnMouseDown() {
+
+        if (!canInteract || !canPlayEvents) {
+            return;
+        }
+            Debug.Log("OnMouseDown " + name);
+
+        if (material.GetColor("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
+            
+
+            if (onMouseDown.Length > 1) {
+
+                onMouseDown[clickCount].Invoke();
+                clickCount++;
+
+                if (clickCount > onMouseDown.Length - 1) {
+                    canPlayEvents = false;
+                    ResetClickCount();
+                }
+
+            } else if (onMouseDown.Length == 1) {
+
+                onMouseDown[clickCount].Invoke();
+                
+                if (!shouldRepeatEvent) {
+                    canPlayEvents = false;
+                }
+
+            }
+
+        }
+
+    }
+
+    public void EnableInteraction() {
+
+        canInteract = true;
+
+    }
+
+    public void DisableInteraction() {
+
+        canInteract = false;
+
+    }
+
+    public void ResetClickCount() {
+
+        Debug.Log("Reset click counts for " + name);
+        clickCount = 0;
 
     }
 
