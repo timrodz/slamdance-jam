@@ -26,7 +26,7 @@ public class RotateAndExpand : MonoBehaviour {
     private void PlayFirstAnimation() {
 
         transform.DOScale(scale, firstDuration).SetEase(firstEase);
-        transform.DORotate(Vector3.forward * angle, firstDuration).SetEase(firstEase).OnComplete(IncrementCount);
+        transform.DORotate(Vector3.forward * angle, firstDuration).SetEase(firstEase).OnComplete(PlaySecondAnimation);
 
     }
 
@@ -37,6 +37,9 @@ public class RotateAndExpand : MonoBehaviour {
         
         // Positive side goes down
         positiveSide.DOMoveY(positiveSide.position.y - yOffset, secondDuration).SetEase(secondEase);
+        
+        StartCoroutine(EnableChildInteraction(secondDuration + 0.1f));
+                
 
     }
 
@@ -49,20 +52,16 @@ public class RotateAndExpand : MonoBehaviour {
         if (canInteract) {
 
             if (count == 0) {
-
+                
+                count++;
                 PlayFirstAnimation();
-
-            } else if (count == 1) {
-
-                PlaySecondAnimation();
+                
                 // Get rid of the circle collider
                 Destroy(GetComponent<CircleCollider2D>());
-
-                StartCoroutine(EnableChildInteraction(secondDuration + 0.1f));
+                
                 canInteract = false;
 
             }
-
         }
 
     }

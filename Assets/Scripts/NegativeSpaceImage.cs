@@ -11,7 +11,8 @@ public enum State {
 
 public class NegativeSpaceImage : MonoBehaviour {
 
-    private Material material;
+    [HideInInspector]
+    public Material material;
 
     public State state;
 
@@ -81,10 +82,10 @@ public class NegativeSpaceImage : MonoBehaviour {
         if (!canInteract || !canPlayEvents) {
             return;
         }
-            Debug.Log("OnMouseDown " + name);
 
         if (material.GetColor("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
-            
+
+            Debug.Log("OnMouseDown " + name);
 
             if (onMouseDown.Length > 1) {
 
@@ -99,7 +100,7 @@ public class NegativeSpaceImage : MonoBehaviour {
             } else if (onMouseDown.Length == 1) {
 
                 onMouseDown[clickCount].Invoke();
-                
+
                 if (!shouldRepeatEvent) {
                     canPlayEvents = false;
                 }

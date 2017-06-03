@@ -6,14 +6,16 @@ using UnityEngine;
 public class BackgroundManager : MonoBehaviour {
 
     public static BackgroundManager Instance { get; private set; }
-	
+
     public Transform currentBackground;
     private Material currentBackgroundMat;
-	[HideInInspector]
-	public Color currentBackgroundColor;
+    [HideInInspector]
+    public Color currentBackgroundColor;
 
     public Transform middleBackground;
     private Material middleMat;
+
+    private bool firstChange = true;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -42,14 +44,19 @@ public class BackgroundManager : MonoBehaviour {
     }
 
     public void ChangeColor(Transform t) {
-		
-		DOTween.KillAll();
+
+        DOTween.KillAll();
 
         Color objectColor = t.GetComponent<Renderer>().material.GetColor("_Color");
-		currentBackgroundColor = objectColor;
+        currentBackgroundColor = objectColor;
 
-        // Set the middle material to have the color of the current material
-        middleMat.SetColor("_Color", currentBackgroundMat.GetColor("_Color"));
+        if (firstChange) {
+            middleMat.SetColor("_Color", Camera.main.backgroundColor);
+			firstChange = false;
+        } else {
+            // Set the middle material to have the color of the current material
+            middleMat.SetColor("_Color", currentBackgroundMat.GetColor("_Color"));
+        }
         middleBackground.localScale = Vector3.one * 5;
 
         currentBackground.localScale = Vector3.zero;
@@ -57,6 +64,29 @@ public class BackgroundManager : MonoBehaviour {
         currentBackground.position = t.position;
 
         currentBackground.DOScale(5, 2);
+
+    }
+	
+	public void ChangeColor(Transform t, Color c, float delay) {
+
+        DOTween.KillAll();
+
+        currentBackgroundColor = c;
+
+        if (firstChange) {
+            middleMat.SetColor("_Color", Camera.main.backgroundColor);
+			firstChange = false;
+        } else {
+            // Set the middle material to have the color of the current material
+            middleMat.SetColor("_Color", currentBackgroundMat.GetColor("_Color"));
+        }
+        middleBackground.localScale = Vector3.one * 5;
+
+        currentBackground.localScale = Vector3.zero;
+        currentBackgroundMat.SetColor("_Color", c);
+        currentBackground.position = t.position;
+
+        currentBackground.DOScale(5, 2).SetDelay(delay);
 
     }
 
