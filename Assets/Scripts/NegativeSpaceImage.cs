@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum State {
+    PositiveSpace,
+    NegativeSpace
+}
+
 public class NegativeSpaceImage : MonoBehaviour {
 
-    [HideInInspector]
-    public MeshRenderer ren;
+    private MeshRenderer mr;
+    private Material material;
 
     public State state;
 
@@ -14,48 +20,59 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void Awake() {
 
-        ren = GetComponent<MeshRenderer>();
+        mr = GetComponent<MeshRenderer>();
+        material = mr.material;
 
     }
-    
+
     public void AssignColor() {
-        
-        switch (state) {
 
-            case State.PositiveSpace:
-                {
-                    GetComponent<Renderer>().material = Resources.Load("Materials/Positive Space") as Material;
-                }
-                break;
-            case State.NegativeSpace:
-                {
-                    GetComponent<Renderer>().material = Resources.Load("Materials/Negative Space") as Material;
-                }
-                break;
+        if (state == State.PositiveSpace) {
+
+            if (ColorManager.Instance == null) {
+                Debug.Log("Negative Material");
+                GetComponent<Renderer>().material = Resources.Load("Materials/Positive Space") as Material;
+            } else {
+                Debug.Log("Negative Color");
+                material.SetColor("_Color", ColorManager.Instance.PositiveSpaceColor);
+            }
+
+        } else {
+
+            if (ColorManager.Instance == null) {
+                Debug.Log("Positive Material");
+                GetComponent<Renderer>().material = Resources.Load("Materials/Negative Space") as Material;
+            } else {
+                Debug.Log("Positive Color");
+                material.SetColor("_Color", ColorManager.Instance.NegativeSpaceColor);
+            }
 
         }
-        
+
     }
-    
+
     public void InvertColor() {
-        
-        switch (state) {
 
-            case State.PositiveSpace:
-                {
-                    state = State.NegativeSpace;
-                }
-                break;
-            case State.NegativeSpace:
-                {
-                    state = State.PositiveSpace;
-                }
-                break;
-
+        if (state == State.PositiveSpace) {
+            state = State.NegativeSpace;
+        } else {
+            state = State.PositiveSpace;
         }
-        
+
         AssignColor();
-        
+
+    }
+
+    public void MakeTransparent() {
+
+    }
+
+    /// <summary>
+    /// OnMouseDown is called when the user has pressed the mouse button while
+    /// over the GUIElement or Collider.
+    /// </summary>
+    void OnMouseDown() {
+
     }
 
 #if UNITY_EDITOR
@@ -65,28 +82,9 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnValidate() {
 
-        switch (state) {
-
-            case State.PositiveSpace:
-                {
-                    GetComponent<Renderer>().material = Resources.Load("Materials/Positive Space") as Material;
-                }
-                break;
-            case State.NegativeSpace:
-                {
-                    GetComponent<Renderer>().material = Resources.Load("Materials/Negative Space") as Material;
-                }
-                break;
-
-        }
+        // AssignColor();
 
     }
 #endif
 
-}
-
-[System.Serializable]
-public enum State {
-    PositiveSpace,
-    NegativeSpace
 }
