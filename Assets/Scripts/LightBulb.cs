@@ -6,11 +6,11 @@ using UnityEngine;
 public class LightBulb : MonoBehaviour {
 
     public Transform lamp;
-	public Transform Light;
+    public Transform Light;
 
     public bool canInteract = false;
 
-	public int count = 0;
+    public int count = 0;
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
@@ -18,43 +18,50 @@ public class LightBulb : MonoBehaviour {
     /// </summary>
     void Start () {
 
-		lamp.DOMoveY(lamp.position.y + 6, 0);
+        lamp.DOMoveY (lamp.position.y + 6, 0);
 
     }
 
-	public void PlayAnimation() {
+    public void PlayAnimation () {
 
-		if (!canInteract) {
-            BackgroundManager.Instance.ChangeColor(this.transform);
-			return;
-		}
+        if (GetComponent<NegativeSpaceImage> ().material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
 
-		if (count == 0) {
+            if (!canInteract) {
+                BackgroundManager.Instance.ChangeColor (this.transform);
+                return;
+            }
 
-			GetComponent<NegativeSpaceImage>().canInteract = false;
-			transform.DOScale (1, 0.25f);
-			lamp.DOMoveY(lamp.position.y - 6, 2).OnComplete(IncrementCount);
+            if (count == 0) {
 
-		}
+                GetComponent<NegativeSpaceImage> ().canInteract = false;
 
-		if (count == 1) {
+                transform.DOScale (1, 0.25f);
 
-			ScaleLightDownwards();
+                lamp.DOMoveY (lamp.position.y - 6, 2).OnComplete (IncrementCount);
 
-		}
+            }
 
-	}
+            if (count == 1) {
 
-	public void ScaleLightDownwards() {
+                ScaleLightDownwards ();
 
-		Light.DOScaleX(1.5f, 3);
-		Light.DOScaleY(0.7f, 3);
-		Light.DOLocalMoveY(-4.6f, 3).OnComplete(IncrementCount);
+            }
 
-	}
+        }
 
-	private void IncrementCount() {
-		GetComponent<NegativeSpaceImage>().canInteract = true;
+    }
+
+    public void ScaleLightDownwards () {
+
+        Light.DOScaleX (1.5f, 2.5f).SetEase (Ease.OutExpo);
+        Light.DOScaleY (0.7f, 2.5f).SetEase (Ease.OutExpo);
+        Light.DOLocalMoveY (-4.6f, 2.5f).SetEase (Ease.OutExpo).OnComplete (IncrementCount);
+		FindObjectOfType<Fruit>().GetComponent<NegativeSpaceImage>().canPlayEvents = true;
+
+    }
+
+    private void IncrementCount () {
+        GetComponent<NegativeSpaceImage> ().canInteract = true;
         count++;
     }
 

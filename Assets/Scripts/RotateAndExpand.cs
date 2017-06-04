@@ -25,8 +25,9 @@ public class RotateAndExpand : MonoBehaviour {
 
     private void PlayFirstAnimation () {
 
-        transform.DOScale (scale, firstDuration).SetEase (firstEase);
-        transform.DORotate (Vector3.forward * angle, firstDuration).SetEase (firstEase).OnComplete (PlaySecondAnimation);
+        Camera.main.DOOrthoSize (5, 1f);
+        transform.DOScale (scale, firstDuration).SetDelay(1f).SetEase (firstEase);
+        transform.DORotate (Vector3.forward * angle, firstDuration).SetDelay(1f).SetEase (firstEase).OnComplete (PlaySecondAnimation);
 
     }
 
@@ -52,13 +53,14 @@ public class RotateAndExpand : MonoBehaviour {
 
             if (count == 0) {
 
+                canInteract = false;
+
                 count++;
+
                 PlayFirstAnimation ();
 
                 // Get rid of the circle collider
                 Destroy (GetComponent<CircleCollider2D> ());
-
-                canInteract = false;
 
             }
         }
@@ -81,6 +83,39 @@ public class RotateAndExpand : MonoBehaviour {
                 child.gameObject.AddComponent<CircleCollider2D> ();
                 child.canInteract = true;
             }
+
+        }
+
+    }
+
+    /// <summary>
+    /// OnMouseDown is called when the user has pressed the mouse button while
+    /// over the GUIElement or Collider.
+    /// </summary>
+    void OnMouseEnter () {
+
+        if (canInteract) {
+            Camera.main.DOOrthoSize (4.5f, 0.3f);
+        }
+
+    }
+
+    /// <summary>
+    /// Called when the mouse is not any longer over the GUIElement or Collider.
+    /// </summary>
+    void OnMouseExit () {
+
+        if (canInteract) {
+            Camera.main.DOOrthoSize (5, 0.3f);
+        }
+
+    }
+
+    private IEnumerator ShrinkCamera (float value) {
+
+        for (float t = 0f; t <= 1f; t += (Time.deltaTime / 015f)) {
+
+            yield return null;
 
         }
 

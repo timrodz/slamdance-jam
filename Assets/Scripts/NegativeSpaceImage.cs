@@ -19,7 +19,8 @@ public class NegativeSpaceImage : MonoBehaviour {
 
     public bool canInteract = true;
     public bool shouldRepeatEvent = true;
-    private bool canPlayEvents = true;
+    [HideInInspector]
+    public bool canPlayEvents = false;
     public UnityEvent[] onMouseDown;
     private int clickCount = 0;
 
@@ -80,11 +81,11 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnMouseDown () {
 
-        if (!canInteract || !canPlayEvents) {
+        if (!canInteract) {
             return;
         }
 
-        if (material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
+        // if (material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
 
             Debug.Log ("OnMouseDown " + name);
 
@@ -96,7 +97,7 @@ public class NegativeSpaceImage : MonoBehaviour {
                 clickCount++;
 
                 if (clickCount > onMouseDown.Length - 1) {
-                    canPlayEvents = false;
+                    // canPlayEvents = false;
                     ResetClickCount ();
                 }
 
@@ -105,12 +106,12 @@ public class NegativeSpaceImage : MonoBehaviour {
                 onMouseDown[clickCount].Invoke ();
 
                 if (!shouldRepeatEvent) {
-                    canPlayEvents = false;
+                    // canPlayEvents = false;
                 }
 
             }
 
-        }
+        // }
 
     }
 
@@ -119,7 +120,7 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnMouseEnter () {
 
-        if (!canInteract || !canPlayEvents || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor)) {
+        if ((!canPlayEvents) && (!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
             return;
         }
 
@@ -132,7 +133,7 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnMouseExit () {
 
-        if (!canInteract || !canPlayEvents || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor)) {
+        if ((!canPlayEvents) && (!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
             return;
         }
 

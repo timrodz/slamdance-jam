@@ -9,87 +9,105 @@ public class Fruit : MonoBehaviour {
 
     public int count = 0;
 
+    public bool canInteract = true;
+
     public void PlayAnimation () {
 
-        if (BackgroundManager.Instance.currentBackgroundColor != ColorManager.Instance.PositiveSpaceColor) {
+        if (GetComponent<NegativeSpaceImage> ().material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
 
-            if (count < 2) {
+            transform.DOScale (1, 0.15f);
+
+            if (BackgroundManager.Instance.currentBackgroundColor != ColorManager.Instance.PositiveSpaceColor) {
+
+                if (count < 2) {
+                    BackgroundManager.Instance.ChangeColor (this.transform);
+                    count++;
+                }
+
+            } else {
+
+                if (count < 2) {
+                    transform.DOMoveY (-4.3f, 1.5f).SetEase (Ease.OutBounce).OnComplete (ChangeColorBack);
+                }
+
+            }
+
+            if (count == 2) {
+
+                StartCoroutine (Jump (0.75f));
+
+            }
+
+            if (count == 3) {
+
                 BackgroundManager.Instance.ChangeColor (this.transform);
                 count++;
-            }
+                
+                FindObjectOfType<LightBulb> ().canInteract = true;
+                FindObjectOfType<LightBulb> ().PlayAnimation ();
 
-        } else {
+                Mountain[] m = FindObjectsOfType<Mountain> ();
 
-            if (count < 2) {
-                transform.DOMoveY (-4.3f, 1.5f).SetEase (Ease.OutBounce).OnComplete (ChangeColorBack);
+                m[0].transform.DOMoveY (-1.87f, 2.5f).SetDelay(0.5f).SetEase (Ease.OutExpo);
+                m[0].transform.DOMoveY (-2.67f, 2.5f).SetDelay(0.5f).SetEase (Ease.OutExpo);
+
             }
 
         }
 
-        if (count == 2) {
+        if (count == 4) {
 
-            StartCoroutine(Jump(0.75f));
-
-        }
-
-        if (count == 3) {
-
-            BackgroundManager.Instance.ChangeColor (this.transform);
-            count++;
-            FindObjectOfType<LightBulb>().canInteract = true;
-            FindObjectOfType<LightBulb>().PlayAnimation();
+            transform.DOScale (1, 0.15f);
 
         }
 
     }
 
-    private IEnumerator Jump(float delay) {
+    private IEnumerator Jump (float delay) {
 
-        GetComponent<NegativeSpaceImage>().canInteract = false;
-
-        transform.DOScale(1, 0.15f);
+        GetComponent<NegativeSpaceImage> ().canInteract = false;
 
         // First jump
         Vector3 pos = transform.position;
         pos.x += 1.33f;
-        transform.DOJump(pos, 2, 1, delay).SetEase(Ease.Linear);
+        transform.DOJump (pos, 2, 1, delay).SetEase (Ease.Linear);
 
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds (delay);
 
         delay -= 0.1f;
 
         // Second jump
         pos = transform.position;
         pos.x += 1.33f;
-        transform.DOJump(pos, 1.5f, 1, delay).SetEase(Ease.Linear);
+        transform.DOJump (pos, 1.5f, 1, delay).SetEase (Ease.Linear);
 
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds (delay);
 
         delay -= 0.1f;
 
         // Third jump
         pos = transform.position;
         pos.x += 1.33f;
-        transform.DOJump(pos, 1, 1, delay).SetEase(Ease.Linear);
+        transform.DOJump (pos, 1, 1, delay).SetEase (Ease.Linear);
 
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds (delay);
 
-        IncrementCount();
+        IncrementCount ();
 
     }
 
     private void ChangeColorBack () {
 
         BackgroundManager.Instance.ChangeColor (this.transform, ColorManager.Instance.NegativeSpaceColor, 1f);
-        FindObjectOfType<LightBulb>().transform.DOScale (1, 0.25f);
+        FindObjectOfType<LightBulb> ().transform.DOScale (1, 0.25f);
         tree.DOMoveX (-12.5f, 1.5f);
-        tree.DOScale(0, 1.5f);
+        tree.DOScale (0, 1.5f);
         count = 2;
 
     }
 
-    private void IncrementCount() {
-        GetComponent<NegativeSpaceImage>().canInteract = true;
+    private void IncrementCount () {
+        GetComponent<NegativeSpaceImage> ().canInteract = true;
         count++;
     }
 
