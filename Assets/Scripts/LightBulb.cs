@@ -6,6 +6,7 @@ using UnityEngine;
 public class LightBulb : MonoBehaviour {
 
     public Transform lamp;
+	public Transform Light;
 
     public bool canInteract = false;
 
@@ -30,19 +31,30 @@ public class LightBulb : MonoBehaviour {
 
 		if (count == 0) {
 
+			GetComponent<NegativeSpaceImage>().canInteract = false;
+			transform.DOScale (1, 0.25f);
 			lamp.DOMoveY(lamp.position.y - 6, 2).OnComplete(IncrementCount);
 
 		}
 
 		if (count == 1) {
 
-
+			ScaleLightDownwards();
 
 		}
 
 	}
 
+	public void ScaleLightDownwards() {
+
+		Light.DOScaleX(1.5f, 3);
+		Light.DOScaleY(0.7f, 3);
+		Light.DOLocalMoveY(-4.6f, 3).OnComplete(IncrementCount);
+
+	}
+
 	private void IncrementCount() {
+		GetComponent<NegativeSpaceImage>().canInteract = true;
         count++;
     }
 

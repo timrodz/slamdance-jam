@@ -88,6 +88,8 @@ public class NegativeSpaceImage : MonoBehaviour {
 
             Debug.Log ("OnMouseDown " + name);
 
+            transform.DOScale (1, 0.25f);
+
             if (onMouseDown.Length > 1) {
 
                 onMouseDown[clickCount].Invoke ();

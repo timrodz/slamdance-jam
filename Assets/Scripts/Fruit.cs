@@ -28,7 +28,7 @@ public class Fruit : MonoBehaviour {
 
         if (count == 2) {
 
-            transform.DOJump (new Vector3 (transform.position.x + 4, transform.position.y, transform.position.z), 3, 3, 2).SetEase (Ease.Linear).OnComplete(IncrementCount);
+            StartCoroutine(Jump(0.75f));
 
         }
 
@@ -43,15 +43,53 @@ public class Fruit : MonoBehaviour {
 
     }
 
+    private IEnumerator Jump(float delay) {
+
+        GetComponent<NegativeSpaceImage>().canInteract = false;
+
+        transform.DOScale(1, 0.15f);
+
+        // First jump
+        Vector3 pos = transform.position;
+        pos.x += 1.33f;
+        transform.DOJump(pos, 2, 1, delay).SetEase(Ease.Linear);
+
+        yield return new WaitForSeconds(delay);
+
+        delay -= 0.1f;
+
+        // Second jump
+        pos = transform.position;
+        pos.x += 1.33f;
+        transform.DOJump(pos, 1.5f, 1, delay).SetEase(Ease.Linear);
+
+        yield return new WaitForSeconds(delay);
+
+        delay -= 0.1f;
+
+        // Third jump
+        pos = transform.position;
+        pos.x += 1.33f;
+        transform.DOJump(pos, 1, 1, delay).SetEase(Ease.Linear);
+
+        yield return new WaitForSeconds(delay);
+
+        IncrementCount();
+
+    }
+
     private void ChangeColorBack () {
 
         BackgroundManager.Instance.ChangeColor (this.transform, ColorManager.Instance.NegativeSpaceColor, 1f);
+        FindObjectOfType<LightBulb>().transform.DOScale (1, 0.25f);
         tree.DOMoveX (-12.5f, 1.5f);
+        tree.DOScale(0, 1.5f);
         count = 2;
 
     }
 
     private void IncrementCount() {
+        GetComponent<NegativeSpaceImage>().canInteract = true;
         count++;
     }
 
