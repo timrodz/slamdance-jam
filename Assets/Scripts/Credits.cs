@@ -22,9 +22,13 @@ public class Credits : MonoBehaviour {
 
     public void Show (float duration, float delay, Ease easeType) {
 
+		transform.eulerAngles = new Vector3(0, 0, 5);
         transform.DORotate (Vector3.forward * -5, 1).SetEase (Ease.InOutQuad).SetLoops (-1, LoopType.Yoyo);
         transform.DOScale (1, duration).SetDelay (delay).SetEase (easeType);
 		
+		Camera.main.DOOrthoSize(15, 4).SetDelay(duration + delay + 3 + 2.5f);
+		transform.parent.DOShakePosition(4, 25f).SetDelay(duration + delay + 3);
+		transform.DOMoveY(-200, 4f).SetDelay(duration + delay + 3);
 
     }
 

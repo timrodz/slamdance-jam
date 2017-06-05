@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof (ColorManager))]
@@ -32,3 +33,4 @@ public class ColorManagerHelper : Editor {
     }
 
 }
+#endif

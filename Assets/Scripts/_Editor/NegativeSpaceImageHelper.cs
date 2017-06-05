@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof (NegativeSpaceImage))]
@@ -20,3 +21,4 @@ public class NegativeSpaceImageHelper : Editor {
     }
 
 }
+#endif

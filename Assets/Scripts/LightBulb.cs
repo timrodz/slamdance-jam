@@ -63,8 +63,8 @@ public class LightBulb : MonoBehaviour {
 
                 Mountain[] m = FindObjectsOfType<Mountain> ();
 
-                m[0].transform.DOMoveY (-10, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
-                m[1].transform.DOMoveY (-10, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
+                m[0].transform.DOMoveY (-35, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
+                m[1].transform.DOMoveY (-35, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
 
                 // HAND
                 Transform hand_1 = FindObjectOfType<Hand_1>().transform;

@@ -7,6 +7,8 @@ public class BackgroundManager : MonoBehaviour {
 
     public static BackgroundManager Instance { get; private set; }
 
+    public float scale = 10;
+
     public Transform currentBackground;
     private Material currentBackgroundMat;
     [HideInInspector]
@@ -63,7 +65,7 @@ public class BackgroundManager : MonoBehaviour {
         currentBackgroundMat.SetColor("_Color", objectColor);
         currentBackground.position = t.position;
 
-        currentBackground.DOScale(5, 2);
+        currentBackground.DOScale(scale, 2);
 
     }
 	
@@ -86,7 +88,7 @@ public class BackgroundManager : MonoBehaviour {
         currentBackgroundMat.SetColor("_Color", c);
         currentBackground.position = position;
 
-        currentBackground.DOScale(5, 2).SetDelay(delay);
+        currentBackground.DOScale(scale, 2).SetDelay(delay);
 
     }
 
