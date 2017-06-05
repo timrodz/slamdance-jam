@@ -67,7 +67,7 @@ public class BackgroundManager : MonoBehaviour {
 
     }
 	
-	public void ChangeColor(Transform t, Color c, float delay) {
+	public void ChangeColor(Vector3 position, Color c, float delay) {
 
         DOTween.KillAll();
 
@@ -84,9 +84,17 @@ public class BackgroundManager : MonoBehaviour {
 
         currentBackground.localScale = Vector3.zero;
         currentBackgroundMat.SetColor("_Color", c);
-        currentBackground.position = t.position;
+        currentBackground.position = position;
 
         currentBackground.DOScale(5, 2).SetDelay(delay);
+
+    }
+
+    public IEnumerator KillAll(float delay) {
+
+        yield return new WaitForSeconds(delay);
+
+        DOTween.KillAll();
 
     }
 

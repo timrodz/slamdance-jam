@@ -43,6 +43,28 @@ public class RotateAndExpand : MonoBehaviour {
 
     }
 
+    // INVERSES
+
+    public void PlayFirstAnimationInverse () {
+
+        // Negative side goes down
+        negativeSide.DOMoveY (negativeSide.position.y - yOffset, secondDuration).SetEase (secondEase);
+
+        // Positive side goes up
+        positiveSide.DOMoveY (positiveSide.position.y + yOffset, secondDuration).SetEase (secondEase).OnComplete (PlaySecondAnimationInverse);
+
+        
+
+    }
+
+    private void PlaySecondAnimationInverse () {
+
+        Camera.main.DOOrthoSize (5, 1f);
+        transform.DOScale (Vector3.one * 0.6f, firstDuration).SetDelay(1f).SetEase (firstEase);
+        transform.DORotate (Vector3.forward * 0, firstDuration).SetDelay(1f).SetEase (firstEase);
+
+    }
+
     /// <summary>
     /// OnMouseDown is called when the user has pressed the mouse button while
     /// over the GUIElement or Collider.
@@ -52,6 +74,8 @@ public class RotateAndExpand : MonoBehaviour {
         if (canInteract) {
 
             if (count == 0) {
+
+                AudioManager.Instance.Play("Click");
 
                 canInteract = false;
 
@@ -82,6 +106,7 @@ public class RotateAndExpand : MonoBehaviour {
             if (child != null) {
                 child.gameObject.AddComponent<CircleCollider2D> ();
                 child.canInteract = true;
+                child.canPlayEvents = true;
             }
 
         }

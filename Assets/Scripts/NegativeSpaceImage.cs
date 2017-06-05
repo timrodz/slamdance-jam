@@ -19,7 +19,6 @@ public class NegativeSpaceImage : MonoBehaviour {
 
     public bool canInteract = true;
     public bool shouldRepeatEvent = true;
-    [HideInInspector]
     public bool canPlayEvents = false;
     public UnityEvent[] onMouseDown;
     private int clickCount = 0;
@@ -71,10 +70,6 @@ public class NegativeSpaceImage : MonoBehaviour {
 
     }
 
-    public void MakeTransparent () {
-
-    }
-
     /// <summary>
     /// OnMouseDown is called when the user has pressed the mouse button while
     /// over the GUIElement or Collider.
@@ -120,7 +115,11 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnMouseEnter () {
 
-        if ((!canPlayEvents) && (!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
+        if (!canPlayEvents) {
+            return;
+        }
+
+        if (!canInteract) {
             return;
         }
 
@@ -133,9 +132,17 @@ public class NegativeSpaceImage : MonoBehaviour {
     /// </summary>
     void OnMouseExit () {
 
-        if ((!canPlayEvents) && (!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
+        if (!canPlayEvents) {
             return;
         }
+
+        if (!canInteract) {
+            return;
+        }
+
+        // if ((!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
+        //     return;
+        // }
 
         transform.DOScale (1, 0.25f);
 
