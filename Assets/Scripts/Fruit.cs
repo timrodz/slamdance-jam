@@ -110,12 +110,16 @@ public class Fruit : MonoBehaviour {
 
         GetComponent<NegativeSpaceImage> ().canInteract = false;
 
+        AudioManager.Instance.Play("Bounce");
+
         // First jump
         Vector3 pos = transform.position;
         pos.x += 1.33f;
         transform.DOJump (pos, 2, 1, delay).SetEase (Ease.Linear);
 
         yield return new WaitForSeconds (delay);
+
+        AudioManager.Instance.Play("Bounce");
 
         delay -= 0.1f;
 
@@ -126,6 +130,8 @@ public class Fruit : MonoBehaviour {
 
         yield return new WaitForSeconds (delay);
 
+        AudioManager.Instance.Play("Bounce");
+
         delay -= 0.1f;
 
         // Third jump
@@ -135,12 +141,15 @@ public class Fruit : MonoBehaviour {
 
         yield return new WaitForSeconds (delay);
 
+        AudioManager.Instance.Play("Bounce");
+
         StartCoroutine(IncrementCount (0));
 
     }
 
     private void ChangeColorBack () {
 
+        AudioManager.Instance.Play("Bounce");
         BackgroundManager.Instance.ChangeColor (this.transform.position, ColorManager.Instance.NegativeSpaceColor, 1f);
         FindObjectOfType<LightBulb> ().transform.DOScale (1, 0.25f);
         tree.DOMoveX (-12.5f, 1.5f);

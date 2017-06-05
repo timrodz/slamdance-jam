@@ -80,7 +80,7 @@ public class LightBulb : MonoBehaviour {
                 hand_2.DOMoveX(-6.7f, 3).SetDelay(5);
                 
                 hand_2.DOMoveX(4.5f, 3).SetDelay(8);
-                transform.DOMoveX(transform.position.x + 7.75f, 3).SetDelay(8);
+                transform.DOMoveX(transform.position.x + 7.8f, 3).SetDelay(8);
 
                 // Hide hand_2
                 hand_2.DOMoveX(12.5f, 3).SetDelay(11);
@@ -88,17 +88,20 @@ public class LightBulb : MonoBehaviour {
                 // show dot in middle
                 StartCoroutine(IncrementCount(13f));
                 fruit.GetChild(0).DOScale(0, 0).SetDelay(11);
-                fruit.DOMove(new Vector3(-1.3f, 0, 0), 0).SetDelay(11);
+                fruit.DOMove(new Vector3(-1.75f, 0, 0), 0).SetDelay(11);
 
             }
 
             if (count == 3) {
 
-                GetComponent<NegativeSpaceImage>().canInteract = false;
-                transform.DOScale(1, 0.15f);
+                AudioManager.Instance.Play ("Click");
 
                 Material m = Resources.Load("Materials/Tree") as Material;
                 BackgroundManager.Instance.ChangeColor(Vector3.zero, m.GetColor("_Color"), 0);
+
+                GetComponent<NegativeSpaceImage>().canInteract = false;
+                transform.DOScale(1, 0.15f);
+
 
                 FindObjectOfType<RotateAndExpand>().PlayFirstAnimationInverse();
 
