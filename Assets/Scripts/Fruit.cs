@@ -11,6 +11,23 @@ public class Fruit : MonoBehaviour {
 
     public bool canInteract = true;
 
+    private bool canPlayFallFromTreeSound = true;
+
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    void Update () {
+
+        if (count < 2) {
+
+            if (transform.position.y < -4.15f && canPlayFallFromTreeSound) {
+                StartCoroutine (FallFromTree ());
+            }
+
+        }
+
+    }
+
     public void PlayAnimation () {
 
         if (GetComponent<NegativeSpaceImage> ().material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
@@ -22,14 +39,13 @@ public class Fruit : MonoBehaviour {
                 if (count < 2) {
                     AudioManager.Instance.Play ("Click");
                     BackgroundManager.Instance.ChangeColor (this.transform);
-                    // count++;
                 }
 
             } else {
 
                 if (count < 2) {
                     AudioManager.Instance.Play ("Click");
-                    StartCoroutine(IncrementCount(3f));
+                    // StartCoroutine (IncrementCount (3f));
                     transform.DOMoveY (-4.3f, 1.5f).SetEase (Ease.OutBounce).OnComplete (ChangeColorBack);
                 }
 
@@ -58,7 +74,7 @@ public class Fruit : MonoBehaviour {
                 m[0].transform.DOMoveY (-2.67f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
                 m[1].transform.DOMoveY (-1.87f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
 
-                StartCoroutine(IncrementCount(3));
+                StartCoroutine (IncrementCount (3));
 
             }
 
@@ -76,13 +92,13 @@ public class Fruit : MonoBehaviour {
 
             lamp.GetChild (0).DOScale (0, 1).SetDelay (1);
 
-            FindObjectOfType<LightBulb>().transform.DOMoveX(-6, 1).SetDelay(1);
+            FindObjectOfType<LightBulb> ().transform.DOMoveX (-6, 1).SetDelay (1);
 
             transform.DOScale (1, 0.15f);
 
-            transform.DOMoveY(transform.position.y + 5, 3);
+            transform.DOMoveY (transform.position.y + 5, 3);
 
-            StartCoroutine(IncrementCount(3));
+            StartCoroutine (IncrementCount (3));
 
         }
 
@@ -90,17 +106,17 @@ public class Fruit : MonoBehaviour {
         if (count == 5) {
 
             AudioManager.Instance.Play ("Click");
-            GetComponent<NegativeSpaceImage>().canPlayEvents = false;
-            
+            GetComponent<NegativeSpaceImage> ().canPlayEvents = false;
+
             FindObjectOfType<LightBulb> ().GetComponent<NegativeSpaceImage> ().canPlayEvents = true;
 
             BackgroundManager.Instance.ChangeColor (this.transform.position, ColorManager.Instance.NegativeSpaceColor, 3.85f);
 
-            Transform child = transform.GetChild(0);
+            Transform child = transform.GetChild (0);
 
-            child.DOScale(Vector3.one * 0.5f, 3).SetEase(Ease.OutQuart);
-            child.DORotate(Vector3.forward * 180, 1.5f).SetDelay(3).SetEase(Ease.InOutExpo);
-            StartCoroutine(IncrementCount(4.5f));
+            child.DOScale (Vector3.one * 0.5f, 3).SetEase (Ease.OutQuart);
+            child.DORotate (Vector3.forward * 180, 1.5f).SetDelay (3).SetEase (Ease.InOutExpo);
+            StartCoroutine (IncrementCount (4.5f));
 
         }
 
@@ -110,7 +126,7 @@ public class Fruit : MonoBehaviour {
 
         GetComponent<NegativeSpaceImage> ().canInteract = false;
 
-        AudioManager.Instance.Play("Bounce");
+        AudioManager.Instance.Play ("Bounce");
 
         // First jump
         Vector3 pos = transform.position;
@@ -119,7 +135,7 @@ public class Fruit : MonoBehaviour {
 
         yield return new WaitForSeconds (delay);
 
-        AudioManager.Instance.Play("Bounce");
+        AudioManager.Instance.Play ("Bounce");
 
         delay -= 0.1f;
 
@@ -130,7 +146,7 @@ public class Fruit : MonoBehaviour {
 
         yield return new WaitForSeconds (delay);
 
-        AudioManager.Instance.Play("Bounce");
+        AudioManager.Instance.Play ("Bounce");
 
         delay -= 0.1f;
 
@@ -141,31 +157,42 @@ public class Fruit : MonoBehaviour {
 
         yield return new WaitForSeconds (delay);
 
-        AudioManager.Instance.Play("Bounce");
+        AudioManager.Instance.Play ("Bounce");
 
-        StartCoroutine(IncrementCount (0));
+        StartCoroutine (IncrementCount (0));
 
     }
 
     private void ChangeColorBack () {
 
-        AudioManager.Instance.Play("Bounce");
+        GetComponent<NegativeSpaceImage> ().canInteract = true;
+        transform.DOScale (1, 0.15f);
+        StopCoroutine("FallFromTree");
+        canPlayFallFromTreeSound = false;
         BackgroundManager.Instance.ChangeColor (this.transform.position, ColorManager.Instance.NegativeSpaceColor, 1f);
         FindObjectOfType<LightBulb> ().transform.DOScale (1, 0.25f);
         tree.DOMoveX (-12.5f, 1.5f);
         tree.DOScale (0, 1.5f);
-        count = 1;
-        
+        count = 2;
 
     }
 
     private IEnumerator IncrementCount (float delay) {
         GetComponent<NegativeSpaceImage> ().canInteract = false;
-        transform.DOScale(1, 0.15f);
-        yield return new WaitForSeconds(delay);
+        transform.DOScale (1, 0.15f);
+        yield return new WaitForSeconds (delay);
         Debug.Log (name + " - animation #" + count + " completed");
         GetComponent<NegativeSpaceImage> ().canInteract = true;
         count++;
+    }
+
+    private IEnumerator FallFromTree () {
+
+        AudioManager.Instance.Play ("Bounce");
+        canPlayFallFromTreeSound = false;
+        yield return new WaitForSeconds (0.3f);
+        canPlayFallFromTreeSound = true;
+
     }
 
 }

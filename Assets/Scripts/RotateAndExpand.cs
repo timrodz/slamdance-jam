@@ -60,7 +60,7 @@ public class RotateAndExpand : MonoBehaviour {
 
     private void PlaySecondAnimationInverse () {
 
-        FindObjectOfType<Credits>().Show(1, 1, firstEase);
+        FindObjectOfType<Credits>().Show(1, 1f + firstDuration, firstEase);
         Camera.main.DOOrthoSize (5, 1f);
         transform.DOScale (Vector3.one * 0.6f, firstDuration).SetDelay(1f).SetEase (firstEase);
         transform.DORotate (Vector3.forward * 0, firstDuration).SetDelay(1f).SetEase (firstEase);

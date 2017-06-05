@@ -9,19 +9,22 @@ public class Credits : MonoBehaviour {
     /// </summary>
     void Start () {
 
-		transform.DORotate(Vector3.forward * -5, 1).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
+        transform.DORotate (Vector3.forward * -5, 1).SetEase (Ease.InOutQuad).SetLoops (-1, LoopType.Yoyo);
 
     }
 
     public void Hide (float duration, float delay, Ease easeType) {
 
         transform.DOScale (0, duration).SetDelay (delay).SetEase (easeType);
+		transform.GetComponentInParent<UnityEngine.UI.Image>().DOFade(0, duration).SetDelay (delay).SetEase (easeType);
 
     }
 
     public void Show (float duration, float delay, Ease easeType) {
 
+        transform.DORotate (Vector3.forward * -5, 1).SetEase (Ease.InOutQuad).SetLoops (-1, LoopType.Yoyo);
         transform.DOScale (1, duration).SetDelay (delay).SetEase (easeType);
+		
 
     }
 
