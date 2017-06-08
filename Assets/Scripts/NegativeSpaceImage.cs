@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Events;
 
 [System.Serializable]
 public enum State {
@@ -18,10 +17,9 @@ public class NegativeSpaceImage : MonoBehaviour {
     public State state;
 
     public bool canInteract = true;
-    public bool shouldRepeatEvent = true;
     public bool canPlayEvents = false;
-    public UnityEvent[] onMouseDown;
-    private int clickCount = 0;
+
+    public int count = 0;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -37,20 +35,20 @@ public class NegativeSpaceImage : MonoBehaviour {
         if (state == State.PositiveSpace) {
 
             if (ColorManager.Instance == null) {
-                Debug.Log ("Negative Material");
+                // Debug.Log ("Negative Material");
                 GetComponent<Renderer> ().material = Resources.Load ("Materials/Positive Space") as Material;
             } else {
-                Debug.Log ("Negative Color");
+                // Debug.Log ("Negative Color");
                 material.SetColor ("_Color", ColorManager.Instance.PositiveSpaceColor);
             }
 
         } else {
 
             if (ColorManager.Instance == null) {
-                Debug.Log ("Positive Material");
+                // Debug.Log ("Positive Material");
                 GetComponent<Renderer> ().material = Resources.Load ("Materials/Negative Space") as Material;
             } else {
-                Debug.Log ("Positive Color");
+                // Debug.Log ("Positive Color");
                 material.SetColor ("_Color", ColorManager.Instance.NegativeSpaceColor);
             }
 
@@ -67,46 +65,6 @@ public class NegativeSpaceImage : MonoBehaviour {
         }
 
         AssignColor ();
-
-    }
-
-    /// <summary>
-    /// OnMouseDown is called when the user has pressed the mouse button while
-    /// over the GUIElement or Collider.
-    /// </summary>
-    void OnMouseDown () {
-
-        if (!canInteract) {
-            return;
-        }
-
-        // if (material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
-
-            Debug.Log ("OnMouseDown " + name);
-
-            transform.DOScale (1, 0.25f);
-
-            if (onMouseDown.Length > 1) {
-
-                onMouseDown[clickCount].Invoke ();
-                clickCount++;
-
-                if (clickCount > onMouseDown.Length - 1) {
-                    // canPlayEvents = false;
-                    ResetClickCount ();
-                }
-
-            } else if (onMouseDown.Length == 1) {
-
-                onMouseDown[clickCount].Invoke ();
-
-                if (!shouldRepeatEvent) {
-                    // canPlayEvents = false;
-                }
-
-            }
-
-        // }
 
     }
 
@@ -140,30 +98,55 @@ public class NegativeSpaceImage : MonoBehaviour {
             return;
         }
 
-        // if ((!canInteract || (material.GetColor("_Color") == BackgroundManager.Instance.currentBackgroundColor))) {
-        //     return;
-        // }
-
         transform.DOScale (1, 0.25f);
 
     }
 
-    public void EnableInteraction () {
+    public void IncrementCount() {
+        
+        StartCoroutine(IncrementCountHelper(0.05f));
 
+    }
+
+    private IEnumerator IncrementCountHelper (float delay) {
+
+        Debug.Log (name + " - animation #" + count);
+        transform.DOScale (1, 0.15f);
+
+        yield return new WaitForSeconds (delay);
+
+        count++;
+
+        Debug.Log (name + " - animation #" + (count - 1) + " completed");
+    
+    }
+
+    public void AllowInteraction (float delay) {
+
+        StartCoroutine(AllowInteractionHelper(delay));
+
+    }
+
+    private IEnumerator AllowInteractionHelper(float delay) {
+
+        transform.DOScale (1, 0.15f);
+        yield return new WaitForSeconds (delay);
         canInteract = true;
 
     }
 
-    public void DisableInteraction () {
+    public void AllowEvents(float delay) {
 
-        canInteract = false;
+        transform.DOScale (1, 0.15f);
+        StartCoroutine(AllowEventsHelper(delay));
+        canPlayEvents = true;
 
     }
 
-    public void ResetClickCount () {
+    private IEnumerator AllowEventsHelper (float delay) {
 
-        Debug.Log ("Reset click counts for " + name);
-        clickCount = 0;
+        yield return new WaitForSeconds (delay);
+        canPlayEvents = true;
 
     }
 

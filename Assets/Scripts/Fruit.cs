@@ -3,15 +3,29 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class Fruit : MonoBehaviour {
+public class Fruit : NegativeSpaceImage {
+
+    private LightBulb lightBulb;
 
     public Transform tree;
 
-    public int count = 0;
-
-    public bool canInteract = true;
-
     private bool canPlayFallFromTreeSound = true;
+
+    private NegativeSpaceImage image;
+    private Color imageColor;
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    void Start () {
+
+        image = GetComponent<NegativeSpaceImage> ();
+        imageColor = image.material.GetColor ("_Color");
+
+        lightBulb = FindObjectOfType<LightBulb> ();
+
+    }
 
     /// <summary>
     /// Update is called every frame, if the MonoBehaviour is enabled.
@@ -30,7 +44,7 @@ public class Fruit : MonoBehaviour {
 
     public void PlayAnimation () {
 
-        if (GetComponent<NegativeSpaceImage> ().material.GetColor ("_Color") != BackgroundManager.Instance.currentBackgroundColor) {
+        if (imageColor != BackgroundManager.Instance.currentBackgroundColor) {
 
             transform.DOScale (1, 0.15f);
 
@@ -45,7 +59,6 @@ public class Fruit : MonoBehaviour {
 
                 if (count < 2) {
                     AudioManager.Instance.Play ("Click");
-                    // StartCoroutine (IncrementCount (3f));
                     transform.DOMoveY (-4.3f, 1.5f).SetEase (Ease.OutBounce).OnComplete (ChangeColorBack);
                 }
 
@@ -59,24 +72,23 @@ public class Fruit : MonoBehaviour {
 
             }
 
-            // Show mountains and interact with the lightbulb
-            if (count == 3) {
+        }
 
-                AudioManager.Instance.Play ("Click");
-                BackgroundManager.Instance.ChangeColor (this.transform);
-                transform.DOScale (1, 0.15f);
+        // Show mountains and interact with the lightbulb
+        if (count == 3) {
 
-                FindObjectOfType<LightBulb> ().canInteract = true;
-                FindObjectOfType<LightBulb> ().PlayAnimation ();
+            AudioManager.Instance.Play ("Click");
+            BackgroundManager.Instance.ChangeColor (this.transform);
+            transform.DOScale (1, 0.15f);
 
-                Mountain[] m = FindObjectsOfType<Mountain> ();
+            lightBulb.PlayAnimation ();
 
-                m[0].transform.DOMoveY (-2.67f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
-                m[1].transform.DOMoveY (-1.87f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
+            Mountain[] m = FindObjectsOfType<Mountain> ();
 
-                StartCoroutine (IncrementCount (3));
+            m[0].transform.DOMoveY (-2.67f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
+            m[1].transform.DOMoveY (-1.87f, 2.5f).SetDelay (0.5f).SetEase (Ease.OutExpo);
 
-            }
+            IncrementCount ();
 
         }
 
@@ -92,13 +104,14 @@ public class Fruit : MonoBehaviour {
 
             lamp.GetChild (0).DOScale (0, 1).SetDelay (1);
 
-            FindObjectOfType<LightBulb> ().transform.DOMoveX (-6, 1).SetDelay (1);
+            lightBulb.transform.DOMoveX (-6, 1).SetDelay (1);
 
             transform.DOScale (1, 0.15f);
 
             transform.DOMoveY (transform.position.y + 5, 3);
 
-            StartCoroutine (IncrementCount (3));
+            IncrementCount ();
+            AllowInteraction (3f);
 
         }
 
@@ -106,9 +119,8 @@ public class Fruit : MonoBehaviour {
         if (count == 5) {
 
             AudioManager.Instance.Play ("Click");
-            GetComponent<NegativeSpaceImage> ().canPlayEvents = false;
 
-            FindObjectOfType<LightBulb> ().GetComponent<NegativeSpaceImage> ().canPlayEvents = true;
+            image.canPlayEvents = false;
 
             BackgroundManager.Instance.ChangeColor (this.transform.position, ColorManager.Instance.NegativeSpaceColor, 3.85f);
 
@@ -116,7 +128,10 @@ public class Fruit : MonoBehaviour {
 
             child.DOScale (Vector3.one * 0.5f, 3).SetEase (Ease.OutQuart);
             child.DORotate (Vector3.forward * 180, 1.5f).SetDelay (3).SetEase (Ease.InOutExpo);
-            StartCoroutine (IncrementCount (4.5f));
+
+            IncrementCount ();
+
+            lightBulb.AllowInteraction (3.85f);
 
         }
 
@@ -124,7 +139,7 @@ public class Fruit : MonoBehaviour {
 
     private IEnumerator Jump (float delay) {
 
-        GetComponent<NegativeSpaceImage> ().canInteract = false;
+        image.canInteract = false;
 
         AudioManager.Instance.Play ("Bounce");
 
@@ -159,39 +174,57 @@ public class Fruit : MonoBehaviour {
 
         AudioManager.Instance.Play ("Bounce");
 
-        StartCoroutine (IncrementCount (0));
+        lightBulb.IncrementCount ();
+
+        IncrementCount ();
+
+        AllowInteraction (0);
 
     }
 
     private void ChangeColorBack () {
 
-        GetComponent<NegativeSpaceImage> ().canInteract = true;
         transform.DOScale (1, 0.15f);
-        StopCoroutine("FallFromTree");
+
+        StopCoroutine ("FallFromTree");
+
         canPlayFallFromTreeSound = false;
         BackgroundManager.Instance.ChangeColor (this.transform.position, ColorManager.Instance.NegativeSpaceColor, 1f);
-        FindObjectOfType<LightBulb> ().transform.DOScale (1, 0.25f);
+
+        lightBulb.transform.DOScale (1, 0.25f);
+
         tree.DOMoveX (-12.5f, 1.5f);
         tree.DOScale (0, 1.5f);
         count = 2;
 
-    }
+        lightBulb.AllowInteraction (0.25f);
+        // lightBulb.IncrementCount (2f);
 
-    private IEnumerator IncrementCount (float delay) {
-        GetComponent<NegativeSpaceImage> ().canInteract = false;
-        transform.DOScale (1, 0.15f);
-        yield return new WaitForSeconds (delay);
-        Debug.Log (name + " - animation #" + count + " completed");
-        GetComponent<NegativeSpaceImage> ().canInteract = true;
-        count++;
     }
 
     private IEnumerator FallFromTree () {
 
         AudioManager.Instance.Play ("Bounce");
         canPlayFallFromTreeSound = false;
+
         yield return new WaitForSeconds (0.3f);
         canPlayFallFromTreeSound = true;
+
+    }
+
+    /// <summary>
+    /// OnMouseDown is called when the user has pressed the mouse button while
+    /// over the GUIElement or Collider.
+    /// </summary>
+    void OnMouseDown () {
+
+        if (!canInteract) {
+            return;
+        }
+
+        transform.DOScale (1, 0.15f);
+        PlayAnimation ();
+        canInteract = false;
 
     }
 

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RotateAndExpand : MonoBehaviour {
 
+    public Credits credits;
+
     [Header ("First animation")]
     public Transform yinYang;
     public Vector3 scale = Vector3.one;
@@ -25,7 +27,7 @@ public class RotateAndExpand : MonoBehaviour {
 
     private void PlayFirstAnimation () {
 
-        FindObjectOfType<Credits>().Hide(1.5f, 0, secondEase);
+        credits.Hide(1.5f, 0, secondEase);
         Camera.main.DOOrthoSize (5, 1f);
         transform.DOScale (scale, firstDuration).SetDelay(1f).SetEase (firstEase);
         transform.DORotate (Vector3.forward * angle, firstDuration).SetDelay(1f).SetEase (firstEase).OnComplete (PlaySecondAnimation);
@@ -60,7 +62,7 @@ public class RotateAndExpand : MonoBehaviour {
 
     private void PlaySecondAnimationInverse () {
 
-        FindObjectOfType<Credits>().Show(1, 1f + firstDuration, firstEase);
+        credits.Show(1, 1f + firstDuration, firstEase);
         Camera.main.DOOrthoSize (5, 1f);
         transform.DOScale (Vector3.one * 0.6f, firstDuration).SetDelay(1f).SetEase (firstEase);
         transform.DORotate (Vector3.forward * 0, firstDuration).SetDelay(1f).SetEase (firstEase);
